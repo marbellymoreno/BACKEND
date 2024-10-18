@@ -11,7 +11,16 @@ namespace BACKEND.Controllers
         public List<PersonaDatos> GetPersonaDatos() => Repository.persona;
 
         [HttpGet("{id}")]
-        public PersonaDatos getPersonaDatos(int id) => Repository.persona.FirstOrDefault(p => p.id == id);
+        public ActionResult<PersonaDatos> Get(int id)
+        {
+            var persona = Repository.persona.FirstOrDefault(p => p.id == id);
+
+            if (persona == null)
+            {
+                return NotFound();
+            }
+            return Ok(persona);
+        }
 
         [HttpGet("search/{search}")]
         public List<PersonaDatos> Get(string search) =>
