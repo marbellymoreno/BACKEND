@@ -7,20 +7,23 @@
             new PersonaDatos()
             {
                 id = 1,
-                age = new DateTime(1999,08,09),
-                name ="Delmy Michelle Moreno de Menjivar"
+                age = 25,
+                name ="Delmy Michelle Moreno de Menjivar",
+                email = "delmymoreno@gmail.com"
             },
             new PersonaDatos()
             {
                 id = 2,
-                age = new DateTime(2023,10,31),
-                name ="Rocio Michelle Menjivar Moreno"
+                age = 1,
+                name ="Rocio Michelle Menjivar Moreno",
+                email = "rociomenjivar@gmail.com"
             },
             new PersonaDatos()
             {
                 id = 3,
-                age = new DateTime(2023,10,31),
-                name ="Mathias Lisandro Menjivar Moreno"
+                age = 1,
+                name ="Mathias Lisandro Menjivar Moreno",
+                email = "mathiasmenjivar@gmail.com"
             }
         };
     }
@@ -29,7 +32,7 @@
     {
         public int id { get; set; }
         public string name { get; set; }
-        public DateTime age { get; set; }
+        public int age { get; set; }
         public string email { get; set; }
     }
 }
