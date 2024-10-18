@@ -13,6 +13,9 @@ namespace BACKEND.Controllers
             return a + b;
         }
 
+        [HttpGet("{id}")]
+        public PersonaDatos getPersonaDatos(int id) => Repository.persona.FirstOrDefault(p => p.id == id);
+
         [HttpPost]
         public decimal Add (Numbers c, [FromHeader(Name = "x-MyHeadersProgra2")] string Host)
         {

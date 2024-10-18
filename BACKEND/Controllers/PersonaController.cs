@@ -7,5 +7,7 @@ namespace BACKEND.Controllers
     [ApiController]
     public class PersonaController : ControllerBase
     {
+        [HttpGet("all")]
+        public List<PersonaDatos> GetPersonaDatos() => Repository.persona;
     }
 }
