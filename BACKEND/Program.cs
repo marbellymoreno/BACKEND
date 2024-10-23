@@ -13,6 +13,8 @@ builder.Services.AddKeyedSingleton<IRandomServices, RandomServices>("randomSingl
 builder.Services.AddKeyedScoped<IRandomServices, RandomServices>("randomScoped");
 builder.Services.AddKeyedTransient<IRandomServices, RandomServices>("randomTransient");
 
+builder.Services.AddScoped<IPostService, PostService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
