@@ -7,19 +7,23 @@ namespace BACKEND.Services
     {
         private HttpClient _httpClient;
 
-        public PostService()
+        public PostService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient; 
         }
 
         public async Task<IEnumerable<PostDTO>> Get()
         {
-            string url = "https://jsonplaceholder.typicode.com/posts";
-            var result = await _httpClient.GetAsync(url);
+            var result = await _httpClient.GetAsync(_httpClient.BaseAddress); 
 
-            var body = await result.Content.ReadAsStringAsync();
+            var body = await result.Content.ReadAsStringAsync(); 
 
-            var post =  JsonSerializer.Deserialize<IEnumerable <PostDTO>>(body);
+            var opciones = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true 
+            };
+
+            var post = JsonSerializer.Deserialize<IEnumerable<PostDTO>>(body, opciones);
             return post;
         }
     }
