@@ -27,6 +27,7 @@ namespace Backend.Controllers
                 Name = b.Name
             }).ToListAsync();
 
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BeerDto>> GetById(int id)
         {
@@ -50,31 +51,63 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<BeerDto>> Add(BeerInsertDto beerInsertDto)
         {
-            try
+            var beer = new Beer()
             {
-                var beer = new Beer()
-                {
-                    Name = beerInsertDto.Name,
-                    BrandId = beerInsertDto.BrandID,
-                    Al = beerInsertDto.Al
-                };
-                await _storeContext.Beers.AddAsync(beer);
-                await _storeContext.SaveChangesAsync();
+                Name = beerInsertDto.Name,
+                BrandId = beerInsertDto.BrandID,
+                Al = beerInsertDto.Al
+            };
+            await _storeContext.Beers.AddAsync(beer);
+            await _storeContext.SaveChangesAsync();
 
-                var beerDto = new BeerDto
-                {
-                    Id = beer.BeerId,
-                    Name = beerInsertDto.Name,
-                    BrandID = beerInsertDto.BrandID,
-                    Al = beerInsertDto.Al
-                };
-                return CreatedAtAction(nameof(GetById), new { id = beer.BeerId }, beerDto);
-            }
-            catch (DbUpdateException dbEx)
+            var beerDto = new BeerDto
             {
-                var innerException = dbEx.InnerException != null ? dbEx.InnerException.Message : dbEx.Message;
-                return StatusCode(500, $"Internal server error: {innerException}");
-            }
+                Id = beer.BeerId,
+                Name = beerInsertDto.Name,
+                BrandID = beerInsertDto.BrandID,
+                Al = beerInsertDto.Al
+            };
+            return CreatedAtAction(nameof(GetById), new { id = beer.BeerId }, beerDto);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<BeerDto>> update(
+            int id, BeerUpdateDto beerUpdateDto)
+        {
+            var beer = await _storeContext.Beers.FindAsync(id);
+            if (beer == null)
+            {
+                return NotFound();
+            }
+
+            beer.Name = beerUpdateDto.Name;
+            beer.Al = beerUpdateDto.Al;
+            beer.BrandId = beerUpdateDto.BrandID;
+
+            await _storeContext.SaveChangesAsync();
+            var beerDto = new BeerDto
+            {
+                Id = beer.BeerId,
+                Name = beer.Name,
+                BrandID = beer.BrandId,
+                Al = beer.Al
+            };
+            return Ok(beerDto);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var beer = await _storeContext.Beers.FindAsync(id);
+            if (beer == null)
+            {
+                return NotFound();
+            }
+            _storeContext.Beers.Remove(beer);
+            await _storeContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
 }
