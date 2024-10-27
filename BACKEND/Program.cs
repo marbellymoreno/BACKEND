@@ -1,5 +1,8 @@
+using BACKEND.DTOs;
 using BACKEND.Models;
 using BACKEND.Services;
+using BACKEND.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +22,9 @@ builder.Services.AddScoped<IPostService, PostService>();
 
 builder.Services.AddHttpClient<IPostService, PostService>(
     c => c.BaseAddress = new Uri(builder.Configuration["BaseUrlPosts"]));
+
+builder.Services.AddScoped<IValidator<BeerInsertDto>, BeerInsertValidator>();
+builder.Services.AddScoped<IValidator<BeerUpdateDto>, BeerUpdateValidator>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
 {
