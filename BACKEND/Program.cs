@@ -19,6 +19,7 @@ builder.Services.AddKeyedScoped<IRandomServices, RandomServices>("randomScoped")
 builder.Services.AddKeyedTransient<IRandomServices, RandomServices>("randomTransient");
 
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IBeerServicess, BeerService>();
 
 builder.Services.AddHttpClient<IPostService, PostService>(
     c => c.BaseAddress = new Uri(builder.Configuration["BaseUrlPosts"]));

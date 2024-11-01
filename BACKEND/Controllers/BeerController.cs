@@ -1,5 +1,6 @@
 ﻿using BACKEND.DTOs;
 using BACKEND.Models;
+using BACKEND.Services;
 using BACKEND.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -12,15 +13,17 @@ namespace Backend.Controllers
     [ApiController]
     public class BeerController : ControllerBase
     {
-        private readonly StoreContext _storeContext;
-        private readonly IValidator<BeerInsertDto> _beerInsertValidator;
-        private readonly IValidator<BeerUpdateDto> _beerUpdateValidator;
+        private StoreContext _storeContext;
+        private  IValidator<BeerInsertDto> _beerInsertValidator;
+        private IValidator<BeerUpdateDto> _beerUpdateValidator;
+        private IBeerServicess _beerService;
 
-        public BeerController(StoreContext storeContext, IValidator<BeerInsertDto> beerInsertValidator, IValidator<BeerUpdateDto> beerUpdateValidator)
+        public BeerController(StoreContext storeContext, IValidator<BeerInsertDto> beerInsertValidator, IValidator<BeerUpdateDto> beerUpdateValidator, IBeerServicess beerService)
         {
             _storeContext = storeContext;
             _beerInsertValidator = beerInsertValidator;
             _beerUpdateValidator = beerUpdateValidator;
+            _beerService = beerService;
         }
 
         [HttpGet]
@@ -118,18 +121,34 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<BeerDto>> Delete(int id)
         {
-            var beer = await _storeContext.Beers.FindAsync(id);
-            if (beer == null)
+            try
             {
-                return NotFound();
+                var beer = await _storeContext.Beers.FindAsync(id);
+                if (beer == null)
+                {
+                    return NotFound();
+                }
+
+                _storeContext.Beers.Remove(beer);
+                await _storeContext.SaveChangesAsync();
+
+                var beerDto = new BeerDto
+                {
+                    Id = beer.BeerId,
+                    Name = beer.Name,
+                    BrandID = beer.BrandId,
+                    Al = beer.Al
+                };
+
+                return Ok(beerDto);
             }
-
-            _storeContext.Beers.Remove(beer);
-            await _storeContext.SaveChangesAsync();
-
-            return Ok();
+            catch (Exception ex)
+            {
+                // Log the exception (ex)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting the beer.");
+            }
         }
     }
 }
